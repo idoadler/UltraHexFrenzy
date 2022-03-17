@@ -5,8 +5,8 @@ public class SplashScreen : MonoBehaviour
 {
 	void OnMouseDown() 
 	{
-		renderer.enabled=false;
-		collider2D.enabled=false;
+		GetComponent<Renderer>().enabled=false;
+		GetComponent<Collider2D>().enabled=false;
 		MissionManager.Init();
 
 	}
@@ -19,7 +19,7 @@ public class SplashScreen : MonoBehaviour
 	
 	public void play()
 	{
-		renderer.enabled=true;
-		collider2D.enabled=true;
+		GetComponent<Renderer>().enabled=true;
+		GetComponent<Collider2D>().enabled=true;
 	}
 }

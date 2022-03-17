@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 [RequireComponent (typeof (SpriteRenderer))]
 public class ScoreScreen : MonoBehaviour 
@@ -41,7 +40,7 @@ public class ScoreScreen : MonoBehaviour
 			GetComponent<SpriteRenderer>().sprite = player2Won;
 
 
-		collider2D.enabled=false;
+		GetComponent<Collider2D>().enabled=false;
 		gameObject.SetActive(true);
 		score1.text = ""+s1;
 		score2.text = ""+s2;
@@ -56,6 +55,6 @@ public class ScoreScreen : MonoBehaviour
 		Credit.SetActive(true);
 	//	CreditHeartHex.renderer.enabled=true;
 		GetComponent<SpriteRenderer>().sprite = playAgain;
-		collider2D.enabled=true;
+		GetComponent<Collider2D>().enabled=true;
 	}
 }

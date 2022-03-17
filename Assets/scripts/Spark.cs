@@ -30,7 +30,7 @@ public class Spark : MonoBehaviour {
 
 	public void init(Vector3 start, Vector3 target)
 	{
-		renderer.enabled = true;
+		GetComponent<Renderer>().enabled = true;
 		startPos = start;
 		timeLeft = ACTION_TIME;
 		targetPos = target;
