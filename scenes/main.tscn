@@ -1,0 +1,228 @@
+[gd_scene load_steps=24 format=3 uid="uid://uhf_main01"]
+
+[ext_resource type="Script" path="res://scripts/mission_manager.gd" id="1_mmgr"]
+[ext_resource type="Script" path="res://scripts/score_screen.gd" id="2_score"]
+[ext_resource type="Script" path="res://scripts/splash_screen.gd" id="3_splash"]
+[ext_resource type="Script" path="res://scripts/credit_hex.gd" id="4_credit"]
+[ext_resource type="Texture2D" path="res://Assets/Art/Main_BG.jpg" id="5_bg"]
+[ext_resource type="Texture2D" path="res://Assets/Art/splash.jpg" id="6_splash_tex"]
+[ext_resource type="Texture2D" path="res://Assets/Art/gameover.jpg" id="7_gameover"]
+[ext_resource type="Texture2D" path="res://Assets/Art/Win1.jpg" id="8_win1"]
+[ext_resource type="Texture2D" path="res://Assets/Art/Win2.jpg" id="9_win2"]
+[ext_resource type="Texture2D" path="res://Assets/Art/tiegame.jpg" id="10_tie"]
+[ext_resource type="Texture2D" path="res://Assets/Art/play_again.jpg" id="11_play_again"]
+[ext_resource type="Texture2D" path="res://Assets/Art/credit2.png" id="12_credit"]
+[ext_resource type="AudioStream" path="res://Assets/Music/Ouroboros.mp3" id="13_bgm"]
+[ext_resource type="AudioStream" path="res://Assets/Music/icon switch.mp3" id="14_switch"]
+[ext_resource type="PackedScene" path="res://scenes/game_hex.tscn" id="15_ghex"]
+[ext_resource type="PackedScene" path="res://scenes/spark.tscn" id="16_spark"]
+[ext_resource type="FontFile" path="res://Assets/Dbbrnms.ttf" id="17_font"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_screen"]
+size = Vector2(1280, 800)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player1"]
+size = Vector2(170, 150)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player2"]
+size = Vector2(170, 150)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_credit"]
+size = Vector2(300, 200)
+
+; ── Root ─────────────────────────────────────────────────────────────────────
+
+[node name="Main" type="Node2D"]
+
+; ── Background ───────────────────────────────────────────────────────────────
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(640, 400)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_bg")
+z_index = 0
+
+; ── Background music ─────────────────────────────────────────────────────────
+
+[node name="BGMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("13_bgm")
+volume_db = -6.0
+autoplay = true
+
+; ── MissionManager ───────────────────────────────────────────────────────────
+
+[node name="MissionManager" type="Node2D" parent="."]
+z_index = 1
+script = ExtResource("1_mmgr")
+game_hex_scene = ExtResource("15_ghex")
+spark_scene = ExtResource("16_spark")
+
+; Container for the 50 dynamically-spawned GameHex nodes.
+[node name="HexContainer" type="Node2D" parent="MissionManager"]
+
+; Player 1 mission display — top centre.
+; Position converted from Unity (0.054, 5.418) → (637, 47).
+; Scale 0.61 ≈ (80 px/unit ÷ 100 PPU) × Unity PlayerHex scale 0.757.
+[node name="Player1" type="Sprite2D" parent="MissionManager"]
+position = Vector2(637, 47)
+scale = Vector2(0.61, 0.61)
+z_index = 2
+
+; Player 2 mission display — bottom centre.
+; Position converted from Unity (0.049, −3.413) → (637, 753).
+[node name="Player2" type="Sprite2D" parent="MissionManager"]
+position = Vector2(637, 753)
+scale = Vector2(0.61, 0.61)
+z_index = 2
+
+; Colourful-lights flash for player 1 area (shown for 0.2 s on mission switch).
+[node name="ColorfullLightsUp" type="Node2D" parent="MissionManager"]
+position = Vector2(637, 47)
+visible = false
+z_index = 3
+
+[node name="LightSprite" type="Sprite2D" parent="MissionManager/ColorfullLightsUp"]
+modulate = Color(1, 0.6, 0.1, 0.7)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("5_bg")
+
+; Colourful-lights flash for player 2 area.
+[node name="ColorfullLightsDown" type="Node2D" parent="MissionManager"]
+position = Vector2(637, 753)
+visible = false
+z_index = 3
+
+[node name="LightSprite" type="Sprite2D" parent="MissionManager/ColorfullLightsDown"]
+modulate = Color(0.1, 0.6, 1, 0.7)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("5_bg")
+
+; Mission-switch sound effect.
+[node name="MissionSwitchAudio" type="AudioStreamPlayer" parent="MissionManager"]
+stream = ExtResource("14_switch")
+
+; ── Splash screen ─────────────────────────────────────────────────────────────
+
+[node name="SplashScreen" type="Node2D" parent="."]
+z_index = 10
+script = ExtResource("3_splash")
+
+[node name="Sprite2D" type="Sprite2D" parent="SplashScreen"]
+position = Vector2(640, 400)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_splash_tex")
+
+[node name="Area2D" type="Area2D" parent="SplashScreen"]
+input_pickable = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SplashScreen/Area2D"]
+position = Vector2(640, 400)
+shape = SubResource("RectangleShape2D_screen")
+
+; ── Score screen (hidden until game ends) ────────────────────────────────────
+
+[node name="ScoreScreen" type="Node2D" parent="."]
+visible = false
+z_index = 10
+script = ExtResource("2_score")
+player1_won_texture = ExtResource("8_win1")
+player2_won_texture = ExtResource("9_win2")
+game_tie_texture = ExtResource("10_tie")
+play_again_texture = ExtResource("11_play_again")
+
+[node name="Background" type="Sprite2D" parent="ScoreScreen"]
+position = Vector2(640, 400)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("7_gameover")
+
+; Player 1 score — upper-left quadrant of the overlay.
+[node name="Score1Label" type="Label" parent="ScoreScreen"]
+position = Vector2(300, 260)
+size = Vector2(200, 120)
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 96
+theme_override_fonts/font = ExtResource("17_font")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 4
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+
+; Player 2 score — lower-right quadrant.
+[node name="Score2Label" type="Label" parent="ScoreScreen"]
+position = Vector2(770, 420)
+size = Vector2(200, 120)
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 96
+theme_override_fonts/font = ExtResource("17_font")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 4
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+
+; Winner indicators — shown for the winning (or tied) player.
+[node name="Winner1" type="Label" parent="ScoreScreen"]
+position = Vector2(130, 295)
+size = Vector2(160, 60)
+text = "WINNER"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(1, 0.85, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+
+[node name="Winner2" type="Label" parent="ScoreScreen"]
+position = Vector2(980, 455)
+size = Vector2(160, 60)
+text = "WINNER"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(1, 0.85, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+
+; Full-screen click area — activated after MIN_SHOW_TIME to restart game.
+[node name="ClickArea" type="Area2D" parent="ScoreScreen"]
+input_pickable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ScoreScreen/ClickArea"]
+position = Vector2(640, 400)
+shape = SubResource("RectangleShape2D_screen")
+
+; Credit panel — shown together with "play again" prompt.
+[node name="Credit" type="Node2D" parent="ScoreScreen"]
+visible = false
+
+[node name="CreditSprite" type="Sprite2D" parent="ScoreScreen/Credit"]
+position = Vector2(640, 680)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("12_credit")
+
+[node name="CreditHex" type="Node2D" parent="ScoreScreen/Credit"]
+script = ExtResource("4_credit")
+
+[node name="Area2D" type="Area2D" parent="ScoreScreen/Credit/CreditHex"]
+input_pickable = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ScoreScreen/Credit/CreditHex/Area2D"]
+position = Vector2(640, 680)
+shape = SubResource("RectangleShape2D_credit")
+
+; ── Player hex click areas (for player-specific scoring validation) ───────────
+; These transparent areas let the ScoreScreen know where each player's
+; display region is — not needed for input, but useful for spark targeting.
+
+[node name="Player1HitArea" type="Area2D" parent="."]
+position = Vector2(637, 47)
+z_index = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player1HitArea"]
+shape = SubResource("RectangleShape2D_player1")
+
+[node name="Player2HitArea" type="Area2D" parent="."]
+position = Vector2(637, 753)
+z_index = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player2HitArea"]
+shape = SubResource("RectangleShape2D_player2")
