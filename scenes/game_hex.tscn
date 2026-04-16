@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://uhf_ghex01"]
+
+[ext_resource type="Script" path="res://scripts/game_hex.gd" id="1_ghex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hex"]
+size = Vector2(120, 100)
+
+[node name="GameHex" type="Area2D"]
+input_pickable = true
+script = ExtResource("1_ghex")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_hex")
+
+[node name="AppearTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="DisappearTimer" type="Timer" parent="."]
+one_shot = true

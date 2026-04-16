@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://uhf_spark01"]
+
+[ext_resource type="Script" path="res://scripts/spark.gd" id="1_spark"]
+[ext_resource type="Texture2D" path="res://Assets/Art/spark.png" id="2_stex"]
+
+[node name="Spark" type="Node2D"]
+script = ExtResource("1_spark")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_stex")
