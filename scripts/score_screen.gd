@@ -12,8 +12,8 @@ const MIN_SHOW_TIME := 5.0
 @onready var bg: Sprite2D = $Background
 @onready var score1_label: Label = $Score1Label
 @onready var score2_label: Label = $Score2Label
-@onready var winner1: Node2D = $Winner1
-@onready var winner2: Node2D = $Winner2
+@onready var winner1: Label = $Winner1
+@onready var winner2: Label = $Winner2
 @onready var click_area: Area2D = $ClickArea
 @onready var credit: Node2D = $Credit
 

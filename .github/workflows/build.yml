@@ -1,0 +1,43 @@
+name: Build UltraHexFrenzy
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  export:
+    name: Export all platforms
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Export with Godot
+        uses: firebelley/godot-export@v6
+        with:
+          godot_executable_download_url: "https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_linux.x86_64.zip"
+          godot_export_templates_download_url: "https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_export_templates.tpz"
+          relative_project_path: "./"
+          archive_output: true
+          use_preset_export_path: true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: UltraHexFrenzy-Windows
+          path: ${{ github.workspace }}/builds/windows/
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: UltraHexFrenzy-macOS
+          path: ${{ github.workspace }}/builds/macos/
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: UltraHexFrenzy-Linux
+          path: ${{ github.workspace }}/builds/linux/
+          if-no-files-found: error
